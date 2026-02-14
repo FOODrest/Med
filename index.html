@@ -1,155 +1,575 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Omayma 💖 Valentine</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html, body { height: 100%; }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-20%) rotate(8deg); opacity: .10; }
+      100% { transform: translateX(20%) rotate(8deg); opacity: .20; }
+    }
+    .shimmer { animation: shimmer 12s ease-in-out infinite alternate; }
+
+    @keyframes floatUp {
+      0% { transform: translate3d(0,0,0) scale(.9); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translate3d(0,-120vh,0) scale(1.25); opacity: 0; }
+    }
+    .float-heart{
+      position:absolute; bottom:-40px;
+      animation: floatUp linear forwards;
+      pointer-events:none; user-select:none;
+      will-change: transform, opacity;
+      /* removed drop-shadow for performance */
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translate3d(0,-20vh,0) rotate(0deg); opacity: 1; }
+      100% { transform: translate3d(0,120vh,0) rotate(720deg); opacity: .95; }
+    }
+    .confetti{
+      position:absolute; top:-20vh;
+      border-radius: 4px;
+      animation: confettiFall linear forwards;
+      pointer-events:none;
+      will-change: transform, opacity;
+      /* removed drop-shadow for performance */
+    }
+
+    @keyframes burst {
+      0% { transform: translate3d(0,0,0) scale(1); opacity: 1; }
+      100% { transform: translate3d(var(--dx), var(--dy), 0) scale(.75); opacity: 0; }
+    }
+    .burst{
+      position:absolute;
+      width:10px;height:10px;border-radius:999px;
+      pointer-events:none;
+      animation: burst 850ms cubic-bezier(.2,.8,.2,1) forwards;
+      will-change: transform, opacity;
+      /* removed drop-shadow for performance */
+    }
+
+    @keyframes fadeIn {
+      from { opacity:0; transform: translate3d(0,14px,0) scale(.99); }
+      to { opacity:1; transform: translate3d(0,0,0) scale(1); }
+    }
+    .fade-in { animation: fadeIn 520ms cubic-bezier(.2,.8,.2,1); }
+
+    @keyframes twinkle {
+      0%,100% { opacity: .25; transform: scale(.95) rotate(0deg); }
+      50% { opacity: .55; transform: scale(1.05) rotate(10deg); }
+    }
+    .twinkle { animation: twinkle 2.7s ease-in-out infinite; }
+
+    .focus-ring:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(244,63,94,.20), 0 10px 25px rgba(0,0,0,.12);
+    }
+
+    .glow { box-shadow: 0 0 80px rgba(244,63,94,.18); }
+
+    .bw-photo{
+      filter: grayscale(100%) contrast(1.05) brightness(1.02);
+    }
+
+    /* Big win: isolate overlay painting */
+    #celebrationOverlay {
+      contain: layout paint size style;
+      will-change: opacity, transform;
+    }
+    /* Reduce paint/layout for heavy sections below fold */
+    section { content-visibility: auto; contain-intrinsic-size: 800px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shimmer,.twinkle,.float-heart,.confetti,.burst,.fade-in { animation: none !important; }
+    }
+    #celebrationOverlay { -webkit-overflow-scrolling: touch; }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { romantic: ['ui-serif','Georgia','serif'] } } }
+    }
+  </script>
 </head>
-<body>
-    <header>
-        <div class="ab">
-            <a href=""><img src="image/logo.png" alt="logo" title="logo"></a>
-            <div class="menu">
-                <ul>
-                    <li><a href="index.html" style="color: rgb(148, 148, 190);">Home</a></li><h2>/</h2>
-                    <li><a href="about.html">About us</a></li><h2>/</h2>
-                    <li><a href="">Pricing</a></li><h2>/</h2>
-                    <li><a href="contact.html">Contact us</a></li>
-                </ul>
+
+<body class="bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 text-slate-800">
+
+  <div class="pointer-events-none fixed inset-0 -z-10">
+    <div class="absolute -top-24 -left-24 w-72 h-72 bg-pink-200 rounded-full blur-3xl opacity-45"></div>
+    <div class="absolute top-20 right-10 w-[26rem] h-[26rem] bg-rose-200 rounded-full blur-3xl opacity-45 shimmer"></div>
+    <div class="absolute -bottom-24 left-1/3 w-[32rem] h-[32rem] bg-red-200 rounded-full blur-3xl opacity-35"></div>
+
+    <div class="absolute inset-0 opacity-[0.05] bg-[radial-gradient(circle_at_1px_1px,rgba(244,63,94,.9)_1px,transparent_1px)] [background-size:28px_28px]"></div>
+
+    <div class="absolute top-16 left-10 text-2xl twinkle">✨</div>
+    <div class="absolute bottom-24 right-16 text-2xl twinkle">✨</div>
+    <div class="absolute top-40 right-36 text-xl twinkle">💫</div>
+  </div>
+
+  <!-- Celebration overlay -->
+  <div id="celebrationOverlay" class="hidden fixed inset-0 z-50 overflow-y-auto">
+
+    <div class="absolute inset-0 bg-gradient-to-br from-pink-100 via-rose-100 to-red-100"></div>
+
+    <div id="confettiLayer" class="absolute inset-0 overflow-hidden"></div>
+    <div id="burstLayer" class="absolute inset-0 overflow-hidden"></div>
+    <div id="emojiLayer" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-6">
+      <div class="fade-in max-w-4xl w-full rounded-[2rem] p-[1px] bg-gradient-to-br from-white/70 via-rose-200/40 to-pink-200/40 shadow-2xl">
+        <div class="bg-white/75 backdrop-blur-xl rounded-[2rem] p-6 sm:p-10 glow border border-white">
+          <div class="text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-100/80 border border-rose-200 text-rose-700 font-semibold shadow-sm">
+              <span>🎉</span>
+              <span>I love you, you little troublemaker 😄</span>
+              <span>🎉</span>
             </div>
-        </div>
-        <div class="menu_btn">&#9776;</div>
-        <div class="login">
-            <a href="login.html">LOGIN</a>
-        </div>
-    </header>
-    <main>
-        <nav class="nav">
-        </nav>
-        <nav class="nav2">
-            <section class="thesection">
-                <div class="writing"><br><br><br><br><br>
-                    <h3>Welcome to MedVault Pro</h3>
-                    <h1>Advancing Healthcare Through MedVault</h1>
-                    <p>Elevate your healthcare experience with MedVault Pro – Redefining precision and efficiency. Secure medical records, streamlined prescriptions, and advanced 3D health analysis, all in one seamless platform.</p>
-                    <br><br>
-                    <div>
-                        <a href="">Request demo  <b> ></b></a>
-                    </div>
+
+            <h1 class="mt-5 text-3xl sm:text-5xl font-romantic font-bold text-rose-700 leading-tight">
+              Omayma… Kanbghik 💘✨
+            </h1>
+
+            <p class="mt-4 text-lg sm:text-xl text-slate-700">
+              You’re my Valentine… and the sweetest blessing in my life 🌹✨
+            </p>
+
+            <div class="mt-8 flex justify-center">
+              <div class="relative">
+                <div class="absolute -inset-2 rounded-3xl bg-gradient-to-br from-rose-300/30 via-pink-300/30 to-red-300/20 blur-xl"></div>
+
+                <img
+                  class="relative w-full max-w-md rounded-3xl shadow-2xl border border-white/80 bw-photo"
+                  src="omayma.jpeg"
+                  alt="Omayma"
+                  loading="eager"
+                  decoding="async"
+                />
+
+                <div class="absolute -top-6 -right-5 text-5xl rotate-12 drop-shadow">👑</div>
+
+                <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white/85 border border-rose-200 shadow text-rose-700 font-semibold">
+                  The prettiest queen ever 👑💖
                 </div>
-                <br><br>
-                <div class="links">
-                    <a href="">Instagram</a><br><br><br>
-                    <a href="">Facebook</a>
+              </div>
+            </div>
+
+            <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+              <button id="moreLoveBtn"
+                class="focus-ring rounded-2xl px-7 py-3 font-semibold bg-rose-600 text-white shadow-lg hover:bg-rose-700 active:scale-[0.98] transition">
+                More love 💞
+              </button>
+
+              <button id="restartBtn"
+                class="focus-ring rounded-2xl px-7 py-3 font-semibold bg-white text-rose-700 shadow-lg border border-rose-200 hover:bg-rose-50 active:scale-[0.98] transition">
+                Restart 🔁
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main id="mainContent" class="relative z-10">
+    <section class="min-h-screen flex items-center justify-center p-6">
+      <div class="max-w-3xl w-full">
+        <div class="rounded-[2rem] p-[1px] bg-gradient-to-br from-white/70 via-rose-200/35 to-pink-200/35 shadow-2xl">
+          <div class="bg-white/70 backdrop-blur-xl rounded-[2rem] p-6 sm:p-10 glow border border-white">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-100/80 border border-rose-200 text-rose-700 font-semibold shadow-sm">
+                  <span>🌹</span><span>I love you so much</span><span>🌹</span>
                 </div>
-            </section>
-        </nav>
-    </main>
-    <section class="reduction">
-        <h1>MedVault Software-Return on Investment</h1><br>
-        <br>
-        <div>
-            <nav>    
-            <h2>40%</h2><br>
-            <h4>Efficiency Boost</h4><br>
-            <p>MedVault Pro significantly enhances efficiency by streamlining medical record management, prescriptions, and offering advanced 3D health analysis. This leads to time savings for professionals, increased patient throughput, and improved overall productivity.</p>
-            </nav>
-        </div><br>
-        <div>
-            <nav>
-            <h2>30%</h2><br>
-            <h4>Patient Satisfaction Impact</h4><br>
-            <p>It positively impacts patient satisfaction through its user-friendly interface and comprehensive healthcare management. Satisfied patients are more likely to continue seeking services, potentially increasing retention rates and driving positive referrals.</p>
-            </nav>
-        </div><br>
-        <div>
-            <nav>    
-            <h2>30%</h2><br>
-            <h4>Reduced Administrative Costs</h4><br>
-            <p>MedVault Pro contributes to a reduction in administrative costs by automating tasks like prescriptions and secure record management. This minimizes manual workload, decreases errors, and optimizes operational costs, improving the overall financial health of healthcare practices.</p>
-            </nav>
-        </div><br><br>
+
+                <h1 class="mt-5 text-3xl sm:text-5xl font-romantic font-bold text-rose-700 leading-tight">
+                  Omayma 💖
+                </h1>
+
+                <p class="mt-4 text-base sm:text-lg text-slate-700 max-w-2xl">
+                  Will you be my Valentine? 😳❤️🌹
+                </p>
+
+                <p id="miniMsg" class="mt-3 text-rose-700 font-semibold">
+                  “You’re the most beautiful person in my world.” 💞
+                </p>
+              </div>
+
+              <div class="hidden sm:block text-5xl drop-shadow-sm">💌</div>
+            </div>
+
+            <div class="mt-8">
+              <div id="buttonZone"
+                class="relative w-full h-56 sm:h-48 rounded-3xl bg-gradient-to-br from-pink-50 to-rose-50 border border-rose-100 overflow-hidden shadow-inner">
+
+                <div class="pointer-events-none absolute -top-3 -left-2 text-3xl opacity-60">💗</div>
+                <div class="pointer-events-none absolute top-5 right-8 text-2xl opacity-60">💘</div>
+                <div class="pointer-events-none absolute bottom-4 left-12 text-2xl opacity-60">💖</div>
+
+                <button id="yesBtn"
+                  class="focus-ring absolute left-6 top-1/2 -translate-y-1/2 rounded-2xl px-8 py-4 sm:px-12 sm:py-4 text-lg sm:text-xl font-extrabold
+                         bg-rose-600 text-white shadow-xl hover:bg-rose-700 active:scale-[0.98] transition">
+                  YES 💖
+                </button>
+
+                <button id="noBtn"
+                  class="focus-ring absolute right-6 top-1/2 -translate-y-1/2 rounded-2xl px-7 py-3 sm:px-8 sm:py-3 text-base sm:text-lg font-semibold
+                         bg-white text-slate-700 shadow-lg border border-slate-200 hover:bg-slate-50 active:scale-[0.98] transition">
+                  No 🙈
+                </button>
+              </div>
+
+              <p id="hintText" class="mt-4 text-sm sm:text-base text-slate-600"></p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-    <nav class="why">
-        <h1>
-            Why choose MedVault?
-        </h1>
-        <div class="whydiv">
-            <div class="part1">
-                <nav class="first">
-                    <h2>NEXT STEPS</h2><br>
-                    <p>MedVault Pro is going global, bringing innovative health tech solutions to a worldwide audience. Our mission to transform healthcare knows no bounds.</p>
-                </nav>
-                <nav class="second">
-                    <h2>FIXED PRICE FOR ALL</h2><br>
-                    <p>MedVault Pro introduces simplicity in healthcare management with a fixed-price subscription model for all our dedicated healthcare professionals and their practices. No hidden fees, just straightforward access to cutting-edge features.</p>
-                </nav>
-            </div>
-            <div class="part2"><br>
-                <h2>BENEFITS</h2>
-                <p><h3><b>Discover the Benefits of MedVault Pro’s Subscription:</b></h3><br><b>Security: Ensure the safety of your medical records with robust data protection. 	</b><br><b>Innovation: Stay ahead with continuous updates and the latest in health tech. 	</b><br><b>Accessibility: Manage your health seamlessly, anywhere, anytime. 	</b><br><b>Convenience: Streamlined prescriptions and comprehensive 3D health analysis in a single platform.</b></p>
-                <br><br><br>
-                <div class="readmore"><a href="about.html">Read more</a></div>
-            </div>
-        </div>
-    </nav><br><br><br>
-    <section class="freetrial">
-        <div>
-            <h1>Ready to dive in ?</h1>
-            <h3>Start your free 14 day trial today.</h3>
-        </div>
-        <div class="freetrial2">
-            <a href="" class="a">Get Started</a>
-            <a href="" class="b">Learn More</a>
-        </div>
-    </section><br><br><br>
-    <footer>
-        <nav class="footer">
-            <img src="image/logo.png" alt="">
-            <div>
-                <h2>Follow us</h2>
-            </div>
-            <div class="f_about">
-                <h2><b>Quick Links</b></h2><br>
-                <a href="">lorem1</a><br><br>
-                <a href="">lorem1</a><br><br>
-                <a href="">lorem1</a><br><br>
-                <a href="">lorem1</a><br><br>
-                <a href="">lorem1</a>
-            </div>
-            <div  class="f_links"><br>
-                <a href="">lorem1</a><br><br><br>
-                <a href="">lorem1</a><br><br><br>
-                <a href="">lorem1</a>
-            </div>
-        </nav>
-        <nav class="final">
-            <p>Read terms and conditions</p>
-            <p>Created by  <a href="https://smartsoftwaresolutions.ltd/"><b> Smart.Software.Solutions</b></a></p>
-            <p>All rights reserved.2023</p>
-        </nav>
 
-    </footer>
-    <script>
-        let menu_btn = document.querySelector('.menu_btn');
-        let menu = document.querySelector('.menu');
-        menu_btn.addEventListener('click', () => {
-            menu.classList.toggle('click');
-            menu_btn.classList.toggle('click');
-        });
-    </script>
-    <script>
-        const header = document.querySelector('header');
+    <section class="pb-20 px-6">
+      <div class="max-w-3xl mx-auto">
+        <div class="rounded-[2rem] p-[1px] bg-gradient-to-br from-white/70 via-rose-200/35 to-pink-200/35 shadow-xl">
+          <div class="bg-white/70 backdrop-blur-xl rounded-[2rem] p-6 sm:p-10 border border-white">
+            <h2 class="text-2xl sm:text-3xl font-romantic font-bold text-rose-700">Why I love you 💗</h2>
+            <ul class="mt-5 space-y-3 text-slate-700">
+              <li class="flex gap-3"><span class="text-xl">🌸</span><span>Because you’re Omayma.</span></li>
+              <li class="flex gap-3"><span class="text-xl">✨</span><span>With you, I feel safe and calm.</span></li>
+              <li class="flex gap-3"><span class="text-xl">🔥</span><span>You’re special… and I want you in my life, always.</span></li>
+              <li class="flex gap-3"><span class="text-xl">😂</span><span>And if you say “No”… it still means “Yes” 😄</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        window.addEventListener('scroll', () => {
-            header.classList.add('scrolled'); // Always add the class when scrolling starts
-            if (window.scrollY === 0) {
-                header.classList.remove('scrolled'); // Remove the class when scrolled back to the top
-            }
+  <div id="heartsLayer" class="fixed inset-0 pointer-events-none overflow-hidden z-40"></div>
+
+  <script>
+    const mainContent = document.getElementById('mainContent');
+
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const buttonZone = document.getElementById('buttonZone');
+    const hintText = document.getElementById('hintText');
+    const miniMsg = document.getElementById('miniMsg');
+
+    const celebrationOverlay = document.getElementById('celebrationOverlay');
+    const heartsLayer = document.getElementById('heartsLayer');
+    const confettiLayer = document.getElementById('confettiLayer');
+    const burstLayer = document.getElementById('burstLayer');
+    const emojiLayer = document.getElementById('emojiLayer');
+
+    const moreLoveBtn = document.getElementById('moreLoveBtn');
+    const restartBtn = document.getElementById('restartBtn');
+
+    const isTouch = matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const lowPower = reduceMotion || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+
+    // HARD LIMITS (prevents freezing)
+    const LIMITS = lowPower
+      ? { maxNodes: 550, confettiTotal: 220, heartsTotal: 70, emojiTotal: 28 }
+      : { maxNodes: 850, confettiTotal: 340, heartsTotal: 110, emojiTotal: 40 };
+
+    // Chunk sizes (spawn across frames)
+    const CHUNK = lowPower
+      ? { confetti: 25, hearts: 10, emoji: 4, burst: 14 }
+      : { confetti: 40, hearts: 14, emoji: 6, burst: 22 };
+
+    let noTapCount = 0;
+
+    const noPhrases = [
+      "No 🙈",
+      "Are you sure? 😳",
+      "Think again… 🥺",
+      "You’re breaking my heart 😭",
+      "Last chance 😤",
+      "Okay… for real? 😅"
+    ];
+
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+    function enforceNodeLimit() {
+      // If for some reason nodes pile up, clean a bit.
+      const total =
+        confettiLayer.childElementCount +
+        burstLayer.childElementCount +
+        emojiLayer.childElementCount +
+        heartsLayer.childElementCount;
+
+      if (total <= LIMITS.maxNodes) return;
+
+      // remove oldest from each layer (cheap cleanup)
+      for (const layer of [confettiLayer, burstLayer, emojiLayer, heartsLayer]) {
+        while (layer.childElementCount > 0 && (
+          confettiLayer.childElementCount +
+          burstLayer.childElementCount +
+          emojiLayer.childElementCount +
+          heartsLayer.childElementCount
+        ) > LIMITS.maxNodes) {
+          layer.firstElementChild.remove();
+        }
+      }
+    }
+
+    // ---------- FAST SPAWNERS (chunked) ----------
+    function spawnHeartsChunk(count) {
+      if (reduceMotion) return;
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'float-heart';
+        heart.textContent = Math.random() > 0.5 ? '💖' : (Math.random() > 0.5 ? '💘' : '💗');
+
+        const size = rand(18, 48);
+        const duration = rand(6, 9);
+
+        heart.style.left = rand(0, 100) + 'vw';
+        heart.style.fontSize = size + 'px';
+        heart.style.animationDuration = duration + 's';
+        heart.style.opacity = (Math.random() * 0.55 + 0.35).toFixed(2);
+
+        frag.appendChild(heart);
+        setTimeout(() => heart.remove(), duration * 1000);
+      }
+      heartsLayer.appendChild(frag);
+    }
+
+    function spawnConfettiChunk(count) {
+      if (reduceMotion) return;
+      const colors = ['#fb7185','#fda4af','#f472b6','#fecdd3','#f43f5e','#ffedd5','#fde68a','#e879f9','#86efac','#60a5fa'];
+      const frag = document.createDocumentFragment();
+
+      for (let i = 0; i < count; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = rand(0, 100) + 'vw';
+        c.style.background = colors[rand(0, colors.length - 1)];
+        c.style.width = rand(6, 12) + 'px';
+        c.style.height = rand(10, 22) + 'px';
+        c.style.animationDuration = rand(4, 8) + 's';
+        c.style.animationDelay = (Math.random() * 0.4) + 's';
+        c.style.opacity = (Math.random() * 0.45 + 0.45).toFixed(2);
+
+        frag.appendChild(c);
+        setTimeout(() => c.remove(), 9500);
+      }
+      confettiLayer.appendChild(frag);
+    }
+
+    function burstAt(x, y, pieces = CHUNK.burst) {
+      if (reduceMotion) return;
+      const colors = ['#fb7185','#f43f5e','#f472b6','#e879f9','#fde68a','#86efac','#60a5fa'];
+      const frag = document.createDocumentFragment();
+
+      for (let i = 0; i < pieces; i++) {
+        const p = document.createElement('div');
+        p.className = 'burst';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.background = colors[rand(0, colors.length - 1)];
+
+        const angle = (Math.PI * 2) * (i / pieces);
+        const dist = rand(60, 150);
+        p.style.setProperty('--dx', (Math.cos(angle) * dist) + 'px');
+        p.style.setProperty('--dy', (Math.sin(angle) * dist) + 'px');
+
+        const s = rand(6, 12);
+        p.style.width = s + 'px';
+        p.style.height = s + 'px';
+
+        frag.appendChild(p);
+        setTimeout(() => p.remove(), 900);
+      }
+      burstLayer.appendChild(frag);
+    }
+
+    function emojiPopChunk(count) {
+      if (reduceMotion) return;
+      const emojis = ['😂','🤣','😳','🥹','💖','💘','💗','🌹','🎉','👑','✨','💫','🔥','💎','🎇'];
+      const frag = document.createDocumentFragment();
+
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = 'absolute text-4xl';
+        el.textContent = emojis[rand(0, emojis.length - 1)];
+        el.style.left = rand(2, 96) + 'vw';
+        el.style.top = rand(12, 86) + 'vh';
+        el.style.transform = `rotate(${rand(-20,20)}deg) scale(1)`;
+        el.style.transition = 'all 850ms ease';
+        frag.appendChild(el);
+
+        requestAnimationFrame(() => {
+          el.style.opacity = '0';
+          el.style.transform += ' scale(1.22) translateY(-10px)';
         });
-    </script>
+
+        setTimeout(() => el.remove(), 900);
+      }
+      emojiLayer.appendChild(frag);
+    }
+
+    // Spawn N items over multiple frames (NO FREEZE)
+    function spawnOverFrames(total, chunkSize, fnChunk) {
+      let remaining = total;
+      function step() {
+        enforceNodeLimit();
+        if (remaining <= 0) return;
+        const n = Math.min(chunkSize, remaining);
+        fnChunk(n);
+        remaining -= n;
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    // Party timeline: cooler + smooth
+    let partyTimer = null;
+    function startPartyTimeline() {
+      clearInterval(partyTimer);
+      let ticks = 0;
+
+      partyTimer = setInterval(() => {
+        // smaller continuous bursts (looks “more” but lighter)
+        spawnOverFrames(lowPower ? 28 : 40, CHUNK.confetti, spawnConfettiChunk);
+        spawnOverFrames(lowPower ? 8 : 12, CHUNK.hearts, spawnHeartsChunk);
+        burstAt(rand(120, innerWidth - 120), rand(140, innerHeight - 200), CHUNK.burst);
+        emojiPopChunk(lowPower ? 2 : 3);
+
+        ticks++;
+        if (ticks >= (lowPower ? 10 : 14)) clearInterval(partyTimer);
+      }, lowPower ? 720 : 540);
+    }
+
+    // INSTANT overlay, effects in background frames
+    function openCelebration() {
+      // Hide everything behind + prevent background scrolling
+      mainContent.classList.add('hidden');
+      heartsLayer.classList.add('hidden');
+      document.body.style.overflow = 'hidden';
+
+      // Show overlay + allow overlay scrolling
+      celebrationOverlay.classList.remove('hidden');
+      celebrationOverlay.scrollTop = 0;
+
+      // spawn effects gradually (no freeze)
+      spawnOverFrames(LIMITS.confettiTotal, CHUNK.confetti, spawnConfettiChunk);
+      spawnOverFrames(LIMITS.heartsTotal, CHUNK.hearts, spawnHeartsChunk);
+      spawnOverFrames(LIMITS.emojiTotal, CHUNK.emoji, emojiPopChunk);
+
+      burstAt(innerWidth / 2, innerHeight / 2, lowPower ? 16 : 22);
+      startPartyTimeline();
+    }
+
+    // Desktop “No” runs away
+    function moveNoButton() {
+      const zoneRect = buttonZone.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+      const padding = 12;
+
+      const maxX = zoneRect.width - btnRect.width - padding;
+      const maxY = zoneRect.height - btnRect.height - padding;
+
+      const currentLeft = parseFloat(noBtn.style.left || (zoneRect.width - btnRect.width - 24));
+      const currentTop  = parseFloat(noBtn.style.top  || (zoneRect.height / 2 - btnRect.height / 2));
+
+      let newLeft = currentLeft, newTop = currentTop;
+      for (let i = 0; i < 8; i++) {
+        const candidateLeft = rand(padding, maxX);
+        const candidateTop = rand(padding, maxY);
+        const dist = Math.hypot(candidateLeft - currentLeft, candidateTop - currentTop);
+        if (dist > 100) { newLeft = candidateLeft; newTop = candidateTop; break; }
+      }
+
+      noBtn.style.left = newLeft + 'px';
+      noBtn.style.top = newTop + 'px';
+      noBtn.style.right = 'auto';
+      noBtn.style.transform = 'translate(0,0)';
+    }
+
+    if (!isTouch) {
+      noBtn.addEventListener('mouseenter', () => {
+        hintText.textContent = "No no 😄 don’t even try…";
+        miniMsg.textContent = "Just say YES 💘";
+        moveNoButton();
+      });
+      noBtn.addEventListener('focus', moveNoButton);
+    }
+
+    noBtn.addEventListener('click', (e) => {
+      if (!isTouch) return;
+
+      noTapCount++;
+      noBtn.textContent = noPhrases[clamp(noTapCount, 0, noPhrases.length - 1)];
+
+      const yesScale = 1 + Math.min(noTapCount * 0.22, 1.6);
+      const noScale = Math.max(1 - noTapCount * 0.14, 0.32);
+
+      yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+      noBtn.style.transform = `translateY(-50%) scale(${noScale})`;
+
+      hintText.textContent = "Look… the ‘No’ is getting tiny 😌";
+      miniMsg.textContent = "“You + Me = forever” 💞";
+
+      // lightweight feedback
+      spawnHeartsChunk(lowPower ? 6 : 10);
+      burstAt(rand(80, innerWidth - 80), rand(120, innerHeight - 140), lowPower ? 12 : 16);
+      e.preventDefault();
+    });
+
+    yesBtn.addEventListener('click', openCelebration);
+
+    moreLoveBtn.addEventListener('click', () => {
+      // still fast: spread over frames
+      spawnOverFrames(lowPower ? 120 : 180, CHUNK.confetti, spawnConfettiChunk);
+      spawnOverFrames(lowPower ? 30 : 48, CHUNK.hearts, spawnHeartsChunk);
+      spawnOverFrames(lowPower ? 14 : 22, CHUNK.emoji, emojiPopChunk);
+
+      burstAt(rand(120, innerWidth - 120), rand(140, innerHeight - 200), lowPower ? 16 : 22);
+      burstAt(rand(120, innerWidth - 120), rand(140, innerHeight - 200), lowPower ? 16 : 22);
+    });
+
+    restartBtn.addEventListener('click', () => {
+  celebrationOverlay.classList.add('hidden');
+  confettiLayer.replaceChildren();
+  burstLayer.replaceChildren();
+  emojiLayer.replaceChildren();
+  heartsLayer.replaceChildren();
+
+  clearInterval(partyTimer);
+  partyTimer = null;
+
+  // Restore background content + scrolling
+  mainContent.classList.remove('hidden');
+  heartsLayer.classList.remove('hidden');
+  document.body.style.overflow = '';
+
+  noTapCount = 0;
+  noBtn.textContent = "No 🙈";
+  yesBtn.style.transform = "translateY(-50%)";
+  noBtn.style.transform = "translateY(-50%)";
+
+  noBtn.style.left = 'auto';
+  noBtn.style.top = '50%';
+  noBtn.style.right = '24px';
+  noBtn.style.transform = 'translateY(-50%)';
+});
+
+    document.addEventListener('click', (e) => {
+      if (celebrationOverlay.classList.contains('hidden')) return;
+      burstAt(e.clientX, e.clientY, lowPower ? 14 : 20);
+      emojiPopChunk(lowPower ? 1 : 2);
+    }, { passive: true });
+  </script>
 </body>
 </html>
